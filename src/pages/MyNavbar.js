@@ -1,59 +1,65 @@
 import {useState} from "react";
-import {Link} from "react-router-dom";
-import {GiHamburgerMenu} from "react-icons/gi";  // Import hamburger icon
-import {SiTask} from "react-icons/si";
-import {BiTask} from "react-icons/bi";
+import {Link, Outlet} from "react-router-dom";
+import {RxDropdownMenu} from "react-icons/rx";
+import {motion} from "framer-motion";
 
 export function MyNavbar() {
-    {/* const [isOpen, setIsOpen] = useState(false); */
-    }
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="flex relative">
-            <div
-                className="h-screen flex flex-col gap-6 w-fit px-5 bg-green-400 items-center rounded-sm shadow-md shadow-black">
-                {/* Hamburger Menu Button */}
-                {/*<button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-white text-3xl mt-4 hover:scale-110 transition-transform duration-200 w-40 flex justify-center"
-            >
-                <GiHamburgerMenu/>
-            </button> */}
+        <div className="flex flex-col h-screen">
+            {/* Top Bar (Static) */}
+            <div className="h-20 w-full flex-none bg-blue-600 flex justify-between items-center px-4 shadow-md">
+                {/* Hamburger Button */}
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="text-white text-5xl hover:scale-110 transition-transform duration-200"
+                >
+                    <RxDropdownMenu/>
+                </button>
 
-                {/* Profile Section (Always Visible) */}
-                <div className="flex flex-col items-center mt-4 z-10">
+                {/* App Title & Logo */}
+                <Link
+                    to="/" className="flex items-center gap-3">
+                    <p className="text-3xl font-bold text-white">HyperFlow</p>
+                    <div className="w-16 h-16 rounded-full overflow-hidden">
+                        <img className="object-cover w-full h-full" src="HyperFlow-white.png" alt="logo"/>
+                    </div>
+                </Link>
+            </div>
+
+            {/* Sidebar (Overlaps Content When Open) */}
+            <motion.div
+                initial={{x: -250}}
+                animate={{x: isOpen ? 0 : -250}}
+                transition={{duration: 0.3, ease: "easeInOut"}}
+                className={`h-full w-52 bg-gray-200 backdrop-blur-sm bg-opacity-70 flex flex-col gap-6 items-center rounded-sm shadow-md shadow-gray-400
+                fixed top-20 left-0 z-10 h-screen`}
+            >
+                {/* Profile Section */}
+                <div className="flex flex-col items-center mt-4">
                     <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white">
                         <img className="object-cover w-full h-full" src="head.jpg" alt="Profile"/>
                     </div>
-                    <p className="text-white font-semibold text-lg mt-2">Marko Žura</p>
+                    <p className="text-blue-800 font-semibold text-lg mt-2">Marko Žura</p>
                 </div>
 
-                {/* Links Section (Hidden Until Clicked) */}
-                <div className="flex flex-col gap-5 w-full">
-                    <Link
-                        className="bg-white w-40 flex justify-center py-2 rounded-md text-blue-800 font-semibold shadow-lg transform transition-transform duration-200 hover:scale-110 hover:bg-gray-50">
-                        <p>Projects</p>
-                    </Link>
-                    <Link
-                        className="bg-white w-40 flex justify-center py-2 rounded-md text-blue-800 font-semibold shadow-lg transform transition-transform duration-200 hover:scale-110 hover:bg-gray-50">
-                        <p>Tasks</p>
-                    </Link>
-                    <Link
-                        className="bg-white w-40 flex justify-center py-2 rounded-md text-blue-800 font-semibold shadow-lg transform transition-transform duration-200 hover:scale-110 hover:bg-gray-50">
-                        <p>Profile</p>
-                    </Link>
-                    <Link
-                        className="bg-white w-40 flex justify-center py-2 rounded-md text-blue-800 font-semibold shadow-lg transform transition-transform duration-200 hover:scale-110 hover:bg-gray-50">
-                        <p>Notifications</p>
-                    </Link>
+                {/* Links Section */}
+                <div className="flex flex-col gap-5 w-full px-4">
+                    {["Home", "Projects", "Tasks", "Profile", "Notifications"].map((item) => (
+                        <Link
+                            to={item === "Home" ? "/" : "/" + item.toLowerCase()}
+                            key={item}
+                            onClick={() => setIsOpen(false)}
+                            className="bg-white w-full flex justify-center py-2 border-2 border-blue-700 rounded-md text-blue-800 font-semibold shadow-lg transform transition-transform duration-200 hover:scale-110 hover:bg-gray-50"
+                        >
+                            {item}
+                        </Link>
+                    ))}
                 </div>
-            </div>
-            <div className="absolute h-20 rounded-sm shadow-md w-full bg-blue-500 flex justify-end items-center">
-                <div className="flex gap-1">
-                    <p className="text-white font-bold text-2xl">ManageMe</p>
-                    <SiTask className="text-white mr-8" size={36}/>
-                </div>
-            </div>
+            </motion.div>
+
+            <Outlet/>
         </div>
     );
 }
