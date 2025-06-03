@@ -1,5 +1,4 @@
 import {Column, Id, Task} from "../types";
-import TrashIcon from "../icons/TrashIcon";
 import {SortableContext} from "@dnd-kit/sortable";
 import TaskCard from "./TaskCard";
 import {useMemo} from "react";
@@ -25,21 +24,30 @@ function ColumnContainer(props: Props) {
     });
 
 
-    return <div ref={setDroppableRef}
-                className=" flex flex-col border-2 border-gray-400"
-    >
+    // Check if this is the first column (e.g., "To Do")
+    const isFirstColumn = column.title === "To Do"; // or by ID if preferred
+
+    return (
         <div
-            className="bg-indigo-400 text-lg text-white h-16 rounded-b-none font-bold border-gray-600 border-2 flex items-center justify-center">
-            {column.title}
+            ref={setDroppableRef}
+            className={`flex flex-col w-1/4 min-w-[20rem] h-full bg-white 
+        ${isFirstColumn ? "border-l-2 border-r-2 border-b-2" : "border-r-2 border-b-2"} 
+        border-gray-300`}
+        >
+            <div className="bg-indigo-600 text-white text-lg font-semibold py-4 px-4">
+                {column.title}
+            </div>
+
+            <div className="flex flex-grow flex-col gap-3 overflow-y-auto p-3">
+                <SortableContext items={tasksIds}>
+                    {tasks.map((task) => (
+                        <TaskCard key={task.id} task={task} deleteTask={deleteTask}/>
+                    ))}
+                </SortableContext>
+            </div>
         </div>
-        <div className="flex flex-grow flex-col gap-3 overflow-y-auto p-2 mt-1 overflow-x-hidden bg-white">
-            <SortableContext items={tasksIds}>
-                {tasks.map((task) => (
-                    <TaskCard key={task.id} task={task} deleteTask={deleteTask}/>
-                ))}
-            </SortableContext>
-        </div>
-    </div>
+    );
+
 }
 
 export default ColumnContainer;

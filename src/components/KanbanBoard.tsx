@@ -98,7 +98,7 @@ function KanbanBoard() {
     return (
         <div className="flex-grow flex p-6">
             <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver}>
-                <div className="grid grid-cols-3 w-full h-3/4">
+                <div className="flex w-full h-3/4 justify-center overflow-x-auto">
                     {columns.map(column =>
                         <ColumnContainer
                             key={column.id}
